@@ -2,7 +2,6 @@ import uuid
 
 from django.core import validators
 from django.db import models
-from django.db.models import Q, F
 
 
 class Planet(models.Model):
@@ -47,11 +46,14 @@ class Sith(models.Model):
 
 
 class Trial(models.Model):
-    code = models.SlugField(default=uuid.uuid4, editable=False)
+    code = models.SlugField(default=uuid.uuid4, editable=False, verbose_name='Идентификатор')
 
     class Meta:
         verbose_name = 'Испытание'
         verbose_name_plural = 'Испытания'
+
+    def __str__(self):
+        return str(self.code)
 
 
 class Question(models.Model):
@@ -79,22 +81,12 @@ class Answer(models.Model):
         return self.answer
 
 
-class Result(models.Model):
-    recruit = models.ForeignKey(Recruit, models.PROTECT, verbose_name='Ректрут')
-
-    class Meta:
-        verbose_name = 'Результат'
-        verbose_name_plural = 'Результаты'
-
-    def __str__(self):
-        return self.recruit
-
-
 class RecruitAnswer(models.Model):
     question = models.ForeignKey(Question, models.PROTECT, verbose_name='Вопрос')
-    result = models.ForeignKey(Result, models.PROTECT, verbose_name='Результат')
     answer = models.ForeignKey(Answer, models.PROTECT, verbose_name='Ответ')
+    recruit = models.ForeignKey(Recruit, models.PROTECT, verbose_name='Рекрут')
 
     class Meta:
         verbose_name = 'Ответ рекрутера'
         verbose_name_plural = 'Ответ рекрутеров'
+        unique_together = ('question', 'recruit')

@@ -47,3 +47,8 @@ class QuestionAdmin(admin.ModelAdmin):
 @admin.register(models.Answer)
 class AnswerAdmin(admin.ModelAdmin):
     list_display = ('answer', 'question')
+
+
+@admin.register(models.RecruitAnswer)
+class RecruitAnswerAdmin(admin.ModelAdmin):
+    list_display = ('question', 'answer', 'recruit')
