@@ -1,3 +1,5 @@
+import uuid
+
 from django.core import validators
 from django.db import models
 from django.db.models import Q, F
@@ -45,7 +47,7 @@ class Sith(models.Model):
 
 
 class Trial(models.Model):
-    pass
+    code = models.SlugField(default=uuid.uuid4, editable=False)
 
     class Meta:
         verbose_name = 'Испытание'

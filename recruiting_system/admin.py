@@ -31,6 +31,7 @@ class QuestionInline(admin.TabularInline):
 @admin.register(models.Trial)
 class TrialAdmin(admin.ModelAdmin):
     inlines = (QuestionInline,)
+    readonly_fields = ('code',)
 
 
 class AnswerInline(admin.TabularInline):
