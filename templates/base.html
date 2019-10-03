@@ -4,8 +4,6 @@
 <html>
 <head>
   <title>Система рекрутинга Ситхов</title>
-
-  <link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
 </head>
 <body>
 <nav>
@@ -13,13 +11,12 @@
     <span class="brand-logo left">Система рекрутинга Ситхов</span>
     <ul class="right">
       <li><a href="{% url 'sith_list' %}">Для ситхов</a></li>
+      <li><a href="{% url 'recruit_create' %}">Для рекрутов</a></li>
     </ul>
   </div>
 </nav>
 
 {% block content %}
 {% endblock %}
-
-<script src="{% static 'js/materialize.min.js' %}"></script>
 </body>
 </html>
