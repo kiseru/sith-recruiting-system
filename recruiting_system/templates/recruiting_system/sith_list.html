@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col s12">
+        <table>
+          <thead>
+          <tr>
+            <th>Имя</th>
+            <th>Планета</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          {% for obj in object_list %}
+            <tr>
+              <td><a href="#">{{ obj.name }}</a></td>
+              <td>{{ obj.learning_planet }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

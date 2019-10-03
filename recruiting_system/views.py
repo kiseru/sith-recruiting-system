@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from django.views import generic
 
-# Create your views here.
+from recruiting_system import models
+
+
+class SithListView(generic.ListView):
+    model = models.Sith
