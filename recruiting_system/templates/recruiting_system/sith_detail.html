@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Ситх: {{ object.name }}</h2>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Имя</th>
+      <th>E-mail</th>
+      <th>Возраст</th>
+      <th>Планета</th>
+    </tr>
+    </thead>
+    {% for recruit in recruits %}
+      <tr>
+        <td>{{ recruit.name }}</td>
+        <td>{{ recruit.email }}</td>
+        <td>{{ recruit.age }}</td>
+        <td>{{ recruit.habitat_planet }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

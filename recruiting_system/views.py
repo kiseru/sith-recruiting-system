@@ -42,3 +42,11 @@ class RecruitDetailView(generic.DetailView,
         for question_id, answer_id in answers:
             models.RecruitAnswer.objects.create(question_id=question_id, answer_id=answer_id, recruit_id=kwargs['pk'])
         return redirect(reverse_lazy('recruit_detail', kwargs={'pk': kwargs['pk']}))
+
+
+class SithDetailView(generic.DetailView):
+    model = models.Sith
+
+    def get_context_data(self, **kwargs):
+        kwargs['recruits'] = models.Recruit.objects.filter(sith__isnull=True, recruitanswer__isnull=False)
+        return kwargs
