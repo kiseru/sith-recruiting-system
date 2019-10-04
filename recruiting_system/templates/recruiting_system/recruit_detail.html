@@ -1,25 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Испытание</h1>
+  <h3>Рекрут: {{ object.name }}</h3>
+  <p>E-mail: {{ object.email }}</p>
+  <p>Возвраст: {{ object.age }}</p>
+  <p>Планета: {{ object.habitat_planet }}</p>
 
-  <p>{{ object.name }}</p>
-
-  <form method="post">
-    {% csrf_token %}
-    {% for question in questions %}
-      <div>
-        <h4>{{ question.question }}</h4>
-        {% for answer in question.answer_set.all %}
-          <div>
-            <input type="radio" id="answer-input-{{ answer.pk }}" name="{{ question.pk }}" value="{{ answer.pk }}">
-            <label for="answer-input-{{ answer.pk }}">{{ answer.answer }}</label>
-          </div>
-        {% endfor %}
-      </div>
-    {% endfor %}
-
-    <br>
-    <button>Отправить</button>
-  </form>
+  <h3>Ответы:</h3>
+  {% for answer in object.recruitanswer_set.all %}
+    <div>
+      <h4>Вопрос: {{ answer.question }}</h4>
+      {% if answer.answer.is_correct %}
+        <p style="color: green">Ответ: {{ answer.answer }}</p>
+      {% else %}
+        <p style="color: red">Ответ: {{ answer.answer }}</p>
+      {% endif %}
+    </div>
+  {% endfor %}
 {% endblock %}

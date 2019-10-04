@@ -14,7 +14,7 @@
     </thead>
     {% for recruit in recruits %}
       <tr>
-        <td>{{ recruit.name }}</td>
+        <td><a href="{% url 'recruit_detail' recruit.pk %}">{{ recruit.name }}</a></td>
         <td>{{ recruit.email }}</td>
         <td>{{ recruit.age }}</td>
         <td>{{ recruit.habitat_planet }}</td>

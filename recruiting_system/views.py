@@ -19,12 +19,13 @@ class RecruitCreateView(generic.CreateView):
     )
 
     def get_success_url(self):
-        return reverse_lazy('recruit_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('recruit_trial', kwargs={'pk': self.object.pk})
 
 
-class RecruitDetailView(generic.DetailView,
-                        generic.FormView):
+class RecruitTrialView(generic.DetailView,
+                       generic.FormView):
     model = models.Recruit
+    template_name = 'recruiting_system/recruit_trial.html'
 
     def get_context_data(self, **kwargs):
         kwargs['questions'] = models.Trial.objects.first().question_set.all()
@@ -41,7 +42,7 @@ class RecruitDetailView(generic.DetailView,
                    if question_id != 'csrfmiddlewaretoken']
         for question_id, answer_id in answers:
             models.RecruitAnswer.objects.create(question_id=question_id, answer_id=answer_id, recruit_id=kwargs['pk'])
-        return redirect(reverse_lazy('recruit_detail', kwargs={'pk': kwargs['pk']}))
+        return redirect(reverse_lazy('recruit_trial', kwargs={'pk': kwargs['pk']}))
 
 
 class SithDetailView(generic.DetailView):
@@ -49,4 +50,12 @@ class SithDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         kwargs['recruits'] = models.Recruit.objects.filter(sith__isnull=True, recruitanswer__isnull=False)
+        return kwargs
+
+
+class RecruitDetailView(generic.DetailView):
+    model = models.Recruit
+
+    def get_context_data(self, **kwargs):
+        kwargs['siths'] = models.Sith.objects.all()
         return kwargs
