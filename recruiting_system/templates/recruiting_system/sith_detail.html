@@ -18,6 +18,13 @@
         <td>{{ recruit.email }}</td>
         <td>{{ recruit.age }}</td>
         <td>{{ recruit.habitat_planet }}</td>
+        <td>
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="recruit_id" value="{{ recruit.id }}">
+            <button>Сделать Рукой Тени</button>
+          </form>
+        </td>
       </tr>
     {% endfor %}
   </table>

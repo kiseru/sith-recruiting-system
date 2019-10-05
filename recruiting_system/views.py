@@ -45,12 +45,19 @@ class RecruitTrialView(generic.DetailView,
         return redirect(reverse_lazy('recruit_trial', kwargs={'pk': kwargs['pk']}))
 
 
-class SithDetailView(generic.DetailView):
+class SithDetailView(generic.DetailView,
+                     generic.FormView):
     model = models.Sith
 
     def get_context_data(self, **kwargs):
         kwargs['recruits'] = models.Recruit.objects.filter(sith__isnull=True, recruitanswer__isnull=False)
         return kwargs
+
+    def post(self, request, *args, **kwargs):
+        recruit = models.Recruit.objects.get(pk=request.POST['recruit_id'])
+        recruit.sith_id = kwargs['pk']
+        recruit.save()
+        return redirect(reverse_lazy('sith_detail', kwargs={'pk': kwargs['pk']}))
 
 
 class RecruitDetailView(generic.DetailView):
