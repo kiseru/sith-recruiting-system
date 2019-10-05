@@ -100,3 +100,7 @@ class RecruitDetailView(generic.DetailView):
 class SithHasMoreThanOneRecruitListView(SithListView):
     def get_queryset(self):
         return self.queryset.filter(recruit__count__gt=1)
+
+
+class RootRedirectView(generic.RedirectView):
+    pattern_name = 'sith_list'

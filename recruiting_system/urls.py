@@ -10,4 +10,5 @@ urlpatterns = [
     path('siths/more_than_one_recruit/', views.SithHasMoreThanOneRecruitListView.as_view(),
          name='sith_more_than_one_recruit_list'),
     path('siths/', views.SithListView.as_view(), name='sith_list'),
+    path('', views.RootRedirectView.as_view(), name='root')
 ]
