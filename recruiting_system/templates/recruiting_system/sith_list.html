@@ -18,7 +18,7 @@
             <tr>
               <td><a href="{% url 'sith_detail' obj.pk %}">{{ obj.name }}</a></td>
               <td>{{ obj.learning_planet }}</td>
-              <td style="text-align: center">{{ obj.recruit_count }}</td>
+              <td style="text-align: center">{{ obj.recruit__count }}</td>
             </tr>
           {% endfor %}
           </tbody>

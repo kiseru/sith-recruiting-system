@@ -9,7 +9,7 @@ from recruiting_system import models
 
 class SithListView(generic.ListView):
     model = models.Sith
-    queryset = models.Sith.objects.all().annotate(recruit_count=Count('recruit'))
+    queryset = models.Sith.objects.annotate(Count('recruit'))
 
 
 class RecruitCreateView(generic.CreateView):
@@ -87,3 +87,8 @@ class RecruitDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         kwargs['siths'] = models.Sith.objects.all()
         return kwargs
+
+
+class SithHasMoreThanOneRecruitListView(SithListView):
+    def get_queryset(self):
+        return self.queryset.filter(recruit__count__gt=1)
