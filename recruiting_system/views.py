@@ -1,3 +1,4 @@
+from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import generic
@@ -55,9 +56,16 @@ class SithDetailView(generic.DetailView,
 
     def post(self, request, *args, **kwargs):
         recruit = models.Recruit.objects.get(pk=request.POST['recruit_id'])
-        recruit.sith_id = kwargs['pk']
+        sith_id = kwargs['pk']
+        recruit.sith_id = sith_id
         recruit.save()
-        return redirect(reverse_lazy('sith_detail', kwargs={'pk': kwargs['pk']}))
+        send_mail(
+            'Вы теперь Рука Тени',
+            f'{recruit.name}, Вы теперь Рука Тени. {models.Sith.objects.get(pk=sith_id)} выбрал Вас',
+            'sith_recruiting_system@test.com',
+            (recruit.email,)
+        )
+        return redirect(reverse_lazy('sith_detail', kwargs={'pk': sith_id}))
 
 
 class RecruitDetailView(generic.DetailView):
