@@ -1,4 +1,5 @@
 from django.core.mail import send_mail
+from django.db.models import Count
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import generic
@@ -8,6 +9,7 @@ from recruiting_system import models
 
 class SithListView(generic.ListView):
     model = models.Sith
+    queryset = models.Sith.objects.all().annotate(recruit_count=Count('recruit'))
 
 
 class RecruitCreateView(generic.CreateView):
