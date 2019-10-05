@@ -7,7 +7,7 @@
   <p>Планета: {{ object.habitat_planet }}</p>
 
   <h3>Ответы:</h3>
-  {% for answer in object.recruitanswer_set.all %}
+  {% for answer in answers %}
     <div>
       <h4>Вопрос: {{ answer.question }}</h4>
       {% if answer.answer.is_correct %}

@@ -12,31 +12,36 @@
     <p>{{ recruit.name }}</p>
   {% endfor %}
 
-  <table>
-    <thead>
-    <tr>
-      <th>Имя</th>
-      <th>E-mail</th>
-      <th>Возраст</th>
-      <th>Планета</th>
-    </tr>
-    </thead>
-    {% for recruit in recruits %}
+  {% if recruits|length_is:0 %}
+    <h4>Нет желающих</h4>
+  {% else %}
+    <table>
+      <thead>
       <tr>
-        <td><a href="{% url 'recruit_detail' recruit.pk %}">{{ recruit.name }}</a></td>
-        <td>{{ recruit.email }}</td>
-        <td>{{ recruit.age }}</td>
-        <td>{{ recruit.habitat_planet }}</td>
-        {% if object.recruit_set.count < 3 %}
-          <td>
-            <form method="post">
-              {% csrf_token %}
-              <input type="hidden" name="recruit_id" value="{{ recruit.id }}">
-              <button>Сделать Рукой Тени</button>
-            </form>
-          </td>
-        {% endif %}
+        <th>Имя</th>
+        <th>E-mail</th>
+        <th>Возраст</th>
+        <th>Планета</th>
       </tr>
-    {% endfor %}
-  </table>
+      </thead>
+
+      {% for recruit in recruits %}
+        <tr>
+          <td><a href="{% url 'recruit_detail' recruit.pk %}">{{ recruit.name }}</a></td>
+          <td>{{ recruit.email }}</td>
+          <td>{{ recruit.age }}</td>
+          <td>{{ recruit.habitat_planet }}</td>
+          {% if object.recruit__count < 3 %}
+            <td>
+              <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="recruit_id" value="{{ recruit.id }}">
+                <button>Сделать Рукой Тени</button>
+              </form>
+            </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </table>
+  {% endif %}
 {% endblock %}

@@ -9,7 +9,7 @@ from recruiting_system import models
 
 class SithListView(generic.ListView):
     model = models.Sith
-    queryset = models.Sith.objects.annotate(Count('recruit'))
+    queryset = models.Sith.objects.annotate(Count('recruit')).select_related('learning_planet')
 
 
 class RecruitCreateView(generic.CreateView):
@@ -31,14 +31,15 @@ class RecruitTrialView(generic.DetailView,
     template_name = 'recruiting_system/recruit_trial.html'
 
     def get_context_data(self, **kwargs):
-        kwargs['questions'] = models.Trial.objects.first().question_set.all()
+        kwargs['questions'] = models.Trial.objects.first().question_set.all().prefetch_related('answer_set')
         return kwargs
 
     def get(self, request, *args, **kwargs):
-        if models.Recruit.objects.get(pk=kwargs['pk']).recruitanswer_set.exists():
+        self.object = self.get_object()
+        if self.object.recruitanswer_set.exists():
             return redirect('recruit_create')
-
-        return super().get(request, *args, **kwargs)
+        context = self.get_context_data(object=self.object)
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         answers = [(int(question_id), int(answer_id)) for question_id, answer_id in request.POST.items()
@@ -52,21 +53,24 @@ class SithDetailView(generic.DetailView,
                      generic.FormView):
     model = models.Sith
     template_name = 'recruiting_system/sith_detail.html'
+    queryset = models.Sith.objects.annotate(Count('recruit'))
 
     def get_context_data(self, **kwargs):
-        kwargs['recruits'] = models.Recruit.objects.filter(sith__isnull=True, recruitanswer__isnull=False)
+        kwargs['recruits'] = models.Recruit.objects.filter(
+            sith__isnull=True,
+            recruitanswer__isnull=False
+        ).select_related('habitat_planet')
         return kwargs
 
     def post(self, request, *args, **kwargs):
         sith_id = kwargs['pk']
-        sith = models.Sith.objects.get(pk=sith_id)
-        if sith.recruit_set.count() >= 3:
+        sith = models.Sith.objects.annotate(Count('recruit')).get(pk=sith_id)
+        if sith.recruit__count >= 3:
             context = {
                 **self.get_context_data(),
                 'object': sith,
                 'error': 'У вас не может быть больше трех Рук Тени'
             }
-            print(context)
             return render(request, self.template_name, context)
 
         recruit = models.Recruit.objects.get(pk=request.POST['recruit_id'])
@@ -83,9 +87,13 @@ class SithDetailView(generic.DetailView,
 
 class RecruitDetailView(generic.DetailView):
     model = models.Recruit
+    queryset = models.Recruit.objects.select_related('habitat_planet')
 
     def get_context_data(self, **kwargs):
-        kwargs['siths'] = models.Sith.objects.all()
+        kwargs['answers'] = models.RecruitAnswer.objects.select_related(
+            'question',
+            'answer',
+        ).filter(recruit_id=kwargs['object'].pk)
         return kwargs
 
 
