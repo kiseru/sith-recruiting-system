@@ -1,7 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
+  {% if error %}
+    <h3 style="color: red">{{ error }}</h3>
+  {% endif %}
+
   <h2>Ситх: {{ object.name }}</h2>
+
+  <h3>Руки Тени (не больше трех)</h3>
+  {% for recruit in object.recruit_set.all %}
+    <p>{{ recruit.name }}</p>
+  {% endfor %}
 
   <table>
     <thead>
@@ -18,13 +27,15 @@
         <td>{{ recruit.email }}</td>
         <td>{{ recruit.age }}</td>
         <td>{{ recruit.habitat_planet }}</td>
-        <td>
-          <form method="post">
-            {% csrf_token %}
-            <input type="hidden" name="recruit_id" value="{{ recruit.id }}">
-            <button>Сделать Рукой Тени</button>
-          </form>
-        </td>
+        {% if object.recruit_set.count < 3 %}
+          <td>
+            <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="recruit_id" value="{{ recruit.id }}">
+              <button>Сделать Рукой Тени</button>
+            </form>
+          </td>
+        {% endif %}
       </tr>
     {% endfor %}
   </table>

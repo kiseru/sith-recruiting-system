@@ -1,5 +1,5 @@
 from django.core.mail import send_mail
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -49,19 +49,30 @@ class RecruitTrialView(generic.DetailView,
 class SithDetailView(generic.DetailView,
                      generic.FormView):
     model = models.Sith
+    template_name = 'recruiting_system/sith_detail.html'
 
     def get_context_data(self, **kwargs):
         kwargs['recruits'] = models.Recruit.objects.filter(sith__isnull=True, recruitanswer__isnull=False)
         return kwargs
 
     def post(self, request, *args, **kwargs):
-        recruit = models.Recruit.objects.get(pk=request.POST['recruit_id'])
         sith_id = kwargs['pk']
+        sith = models.Sith.objects.get(pk=sith_id)
+        if sith.recruit_set.count() >= 3:
+            context = {
+                **self.get_context_data(),
+                'object': sith,
+                'error': 'У вас не может быть больше трех Рук Тени'
+            }
+            print(context)
+            return render(request, self.template_name, context)
+
+        recruit = models.Recruit.objects.get(pk=request.POST['recruit_id'])
         recruit.sith_id = sith_id
         recruit.save()
         send_mail(
             'Вы теперь Рука Тени',
-            f'{recruit.name}, Вы теперь Рука Тени. {models.Sith.objects.get(pk=sith_id)} выбрал Вас',
+            f'{recruit.name}, Вы теперь Рука Тени. {sith} выбрал Вас',
             'sith_recruiting_system@test.com',
             (recruit.email,)
         )
